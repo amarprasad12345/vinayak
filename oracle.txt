@@ -1,0 +1,217 @@
+//even or odd 
+
+#include<stdio.h>
+int main()
+{
+    char msg[10],tmsg[20],error;
+    int count=0,flag,len=0,pos;
+    printf("Enter Message :");
+    scanf("%[^\n]s",msg);
+    for(int i=0;msg[i]!='\0';i++)
+    {
+        len++;
+        if(msg[i]=='1')
+        {
+        count++;
+        }
+        tmsg[i]=msg[i];
+    }
+    if(count%2==0)
+    {
+        printf("\nEven parity");
+        flag=0;
+    }
+    else
+    {
+        printf("\nOdd parity");
+        flag=1;
+    }
+    if(flag==0)
+    {
+
+        tmsg[len]='1';
+    }
+    else
+    {
+
+        tmsg[len]='0';
+    }
+    printf("\nDo you want to Introduce error(y/n):");
+    scanf(" %c",&error);
+    if(error=='y')
+    {
+        printf("\nEnter the position : 1 (condition : position between 1 to %d size) :",len+1);
+        scanf("%d",&pos);
+        if(pos>0 && pos <len+1)
+        {
+            if(tmsg[pos-1]=='1')
+            {
+                tmsg[pos-1]='0';
+            }
+            else
+            {
+                tmsg[pos-1]='1';
+            }
+            printf("\nMessage received at the Receiver : %s",tmsg);
+            printf("\nError in message");
+        }
+
+    }
+    else{
+    printf("\n");
+    printf("\nMessage received at the Receiver : %s\n",tmsg);
+    printf("No error in message");
+    }
+}
+
+//CRC
+
+#include<stdio.h>
+
+int power(int a,int b)
+{
+    if(b==0)
+    {
+        return 1;
+    }
+    if(b==1)
+    {
+        return a;
+    }
+    return a* power(a,b-1);
+}
+
+int main()
+{
+ char msg[20],pat[20],append[20],t[10];
+ int msgsize=0,patsize=0,fcssize;
+ int div=0,quot=0;
+
+ printf("Enter message :");
+ scanf("%s",msg);
+ for(int i=0;msg[i]!='\0';i++)
+ {
+    msgsize++;
+ }
+ printf("\nEnter pattern :");
+ scanf("%s",pat);
+ for(int i=0;pat[i]!='\0';i++)
+ {
+    patsize++;
+ }
+ printf("\nGiven message is : %s",msg);
+ printf("\nGiven pattern is : %s",pat);
+ printf("\nMessage size is :%d",msgsize);
+ printf("\nPattren size is :%d",patsize);
+ fcssize=patsize-1;
+ printf("\nFCS             :%d",fcssize);
+ int j=0;
+ for(int k=0;k<msgsize+fcssize;k++)
+ {
+    append[k]='0';
+ }
+ for(j;msg[j]!='\0';j++)
+ {
+    append[j]=msg[j];
+ }
+
+int msghold=msgsize;
+
+ for(int j=msgsize;j<msgsize+fcssize;j++)
+ {
+    append[j]='0';
+ }
+ append[msgsize+fcssize]='\0';
+printf("\n");
+ printf("\n After appending Q is :%s",append);
+int appendsize=0;
+for(int i=0;append[i]!='\0';i++)
+{
+    appendsize++;
+}
+ int pos=0,temp=appendsize-1;
+
+ while(temp>0)
+ {
+    pos++;
+    char hol=append[temp-1];
+    int hold=hol-'0';
+
+    div=div+(hold*power(2,pos));
+    temp--;
+
+ }
+ temp=patsize;
+ pos=0;
+ while(temp>0)
+ {
+    pos++;
+    char hol=pat[temp-1];
+    int hold=hol-'0';
+
+    quot=quot+hold*power(2,pos);
+    temp--;
+ }
+ int rem=div%quot;
+ printf("\nffff%d,%d,%d",div,quot,rem);
+ int flag=1;
+ int val,qval;
+ int i=0;
+ while(flag==1)
+ {
+    rem=rem/2;
+    val=rem%2;
+    char c=val+'0'-1;
+    t[i++]=c;
+    if(rem==1)
+    {
+        t[i++]='1';
+        flag=0;
+    }
+    else if(rem==0)
+    {
+        t[i++]='0';
+        flag=0;
+    }
+
+
+ }
+ char remhold[10];
+ int q=i;
+
+
+ msghold=msgsize;
+ for(int i=fcssize-1;i>=0;i--)
+ {
+    append[msgsize++]=t[i];
+ }
+
+ printf("\nMessage to be transmitted is %s",append);
+ printf("\nDo you want to introduce error ?(y/n)");
+ char y;
+ scanf(" %c",&y);
+ int n;
+ if(y=='y')
+ {
+    printf("\nEnter the position :(1 to %d) :",msgsize+fcssize);
+    scanf("%d",&n);
+    if(append[n-1]=='0')
+    {
+        append[n-1]='1';
+
+    }else{
+        append[n-1]='0';
+    }
+
+ }
+
+ printf("\n");
+ printf("\nMessage recieved at the receiver : %s",append);
+ printf("\nRemainder :");
+ for(int i=fcssize;i>=0;i--)
+ {
+ printf("%c",t[i]);
+ }
+
+
+}
